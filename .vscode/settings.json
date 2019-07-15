@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "time.h": "c",
+        "timeb.h": "c",
+        "stdlib.h": "c",
+        "sendfile.h": "c"
+    }
+}
