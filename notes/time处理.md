@@ -3,6 +3,8 @@
 
 2.https://www.cnblogs.com/book-gary/p/3716790.html
 
+3.https://blog.csdn.net/qinrenzhi/article/details/81252377
+
 ## **获取时间可用的函数：**
 
 4、GetLocalTime(SYSTEMTIME&) 获取本地时间，有毫秒
@@ -118,10 +120,6 @@ gettimeofday(&tv_end, NULL);
 11、TimeGetTime 
 和GetTickCount差不多。GetTickCount精度15毫秒，TimeGetTime精度为1ms
 
-**系统函数的转化关系如下：**
-
-![系统函数的转化关系如下：](https://images2015.cnblogs.com/blog/937999/201604/937999-20160416155645738-366410882.jpg)
-
 
 
 eg:
@@ -199,4 +197,47 @@ timespec: 45530300 seconds
 
 ## 设置系统时间
 
+**系统函数的转化关系如下：**
 
+![系统函数的转化关系如下：](https://images2015.cnblogs.com/blog/937999/201604/937999-20160416155645738-366410882.jpg)
+
+mktime()函数可以将struct tm转换成time_t，其声明如下：
+
+>time_t mktime (struct tm *timeptr);
+
+https://blog.csdn.net/qq_33706673/article/details/79008071
+
+Linux下设置系统时间：
+
+获取系统时间有两个途径，一种是从CMOS中读，一种是从系统中读，但修改时间却只有一种，即修改linux系统中的时间，而修改CMOS中的时间是无效的，因为CMOS中的时间会被定时重写掉。
+
+1．Linux下设置系统时间的函数有好几个，先来看看最常用的stime()函数，这个函数只能精确到**秒**。
+```c
+#define _SVID_SOURCE /*如果你使用的是glib2的话，必须先定义这个宏才能使用*/
+
+#include <time.h>
+
+int stime(time_t *t);
+```
+2．通过settimeofday()函数来设置系统时间，这个函数设置的精度可以精确到**微秒**。
+```c
+#include <sys/time.h> //或者
+
+#include <time.h>
+
+struct timeval tv;
+
+printf("time val second is %ld\n", tv.tv_sec);
+
+printf("time val microsecond is %ld\n", tv.tv_usec);
+
+tv.tv_sec+=10;
+
+tv.tv_usec+=10;
+
+int settimeofday(const struct timeval *tv, const struct timezone *tz);
+
+printf("time val second is %ld\n", tv.tv_sec);
+
+printf("time val microsecond is %ld\n", tv.tv_usec);
+```
