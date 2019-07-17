@@ -1,9 +1,18 @@
-参考网址：
-1.http://bjtime.cn/info/view.asp?id=307
+## **参考网址：**
 
-2.https://www.cnblogs.com/book-gary/p/3716790.html
+1.[C语言的时间函数](http://bjtime.cn/info/view.asp?id=307)
 
-3.https://blog.csdn.net/qinrenzhi/article/details/81252377
+2.[struct timespec 和 struct timeval](https://www.cnblogs.com/book-gary/p/3716790.html)
+
+3.[Linux系统时间函数](https://blog.csdn.net/qinrenzhi/article/details/81252377)
+
+4.[C语言之间函数(4)之Linux下设置时间的函数stime()和settimeofday()](https://blog.csdn.net/qq_33706673/article/details/79008071)
+
+**5.x86毫秒级的中断如何实现微秒的时间：**[浅谈时间函数gettimeofday的成本
+](https://blog.csdn.net/russell_tao/article/details/7185588)
+
+**6.settimeofday() 将时间设置到墙上时间wall_jiffies:**[系统调用之sys_settimeofday](https://blog.csdn.net/tiantao2012/article/details/80199474)
+
 
 ## **获取时间可用的函数：**
 
@@ -195,7 +204,7 @@ timespec: 45530300 seconds
 ```
 
 
-## 设置系统时间
+## **设置系统时间**
 
 **系统函数的转化关系如下：**
 
@@ -205,9 +214,11 @@ mktime()函数可以将struct tm转换成time_t，其声明如下：
 
 >time_t mktime (struct tm *timeptr);
 
-https://blog.csdn.net/qq_33706673/article/details/79008071
+
 
 Linux下设置系统时间：
+
+**标准C库中只有获取系统时间的API，好像还没有设置系统时间的API**
 
 获取系统时间有两个途径，一种是从CMOS中读，一种是从系统中读，但修改时间却只有一种，即修改linux系统中的时间，而修改CMOS中的时间是无效的，因为CMOS中的时间会被定时重写掉。
 
@@ -235,9 +246,36 @@ tv.tv_sec+=10;
 
 tv.tv_usec+=10;
 
-int settimeofday(const struct timeval *tv, const struct timezone *tz);
+ if(settimeofday(&tv, NULL)){
+        printf("fault");
+    }
 
 printf("time val second is %ld\n", tv.tv_sec);
 
 printf("time val microsecond is %ld\n", tv.tv_usec);
 ```
+
+
+有些系统调用在GLIBC里是找不到相应的函数的. 这一类函数会按照 sysdeps/unix/syscall-template.S 里的参数要求在 sysdeps/unix/syscall.S里定义每一个系统调用. 编译的时候,sysdev/unix/make-syscalls.sh 会根据上面的文件生成每个函数的汇编代码到 glibc库里面.
+
+**Unix系统**
+
+在Unix类的操作系统中，调用sleep()函数需要一个以秒为单位的参数，需要更精确的时间控制可以使用nanosleep()函数。
+
+![NTP客户端与服务器的交互过程](https://img-blog.csdn.net/20180811164448323?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2Rvc3RoaW5n/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+
+客户端和服务端都有一个时间轴，分别代表着各自系统的时间，当客户端想要同步服务端的时间时，客户端会构造一个NTP协议包发送到NTP服务端，客户端会记下此时发送的时间t0，经过一段网络延时传输后，服务器在t1时刻收到数据包，经过一段时间处理后在t2时刻向客户端返回数据包，再经过一段网络延时传输后客户端在t3时刻收到NTP服务器数据包。特别声明，t0和t3是客户端时间系统的时间、t1和t2是NTP服务端时间系统的时间，它们是有区别的。对于时间要求不那么精准设备，直接使用NTP服务器返回t2时间也没有太大影响。但是作为一个标准的通信协议，它是精益求精且容不得过多误差的，于是必须计算上网络的传输延时。客户端与服务端的时间系统的偏移定义为θ、网络的往返延迟定义为δ，基于此，可以对t2进行精确的修正，已达到相关精度要求，它们的计算公式如下：
+
+
+$t_1-(t_0+δ) = θ$
+
+$t_0+δ$:
+
+$t_3-(t_2+δ) = θ$
+
+$θ=\frac{(t_1-t_0)+(t_2-t_3)}{2}$
+
+$δ =(t_3-t_0)-(t_2-t_1)$
+
+
+
