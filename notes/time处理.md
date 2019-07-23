@@ -245,7 +245,10 @@ printf("time val microsecond is %ld\n", tv.tv_usec);
 tv.tv_sec+=10;
 
 tv.tv_usec+=10;
+/*settimeofday调用sys_settimeofday,sys_settimeofday调用do_settimeofday完成时间的修改，将tv变量存储的时间修改到xtime.
 
+gettimeofday<-sys_gettimeofday<-do_gettimeofday从xtime将时间读取出来
+*/
  if(settimeofday(&tv, NULL)){
         printf("fault");
     }
@@ -266,7 +269,7 @@ printf("time val microsecond is %ld\n", tv.tv_usec);
 
 客户端和服务端都有一个时间轴，分别代表着各自系统的时间，当客户端想要同步服务端的时间时，客户端会构造一个NTP协议包发送到NTP服务端，客户端会记下此时发送的时间t0，经过一段网络延时传输后，服务器在t1时刻收到数据包，经过一段时间处理后在t2时刻向客户端返回数据包，再经过一段网络延时传输后客户端在t3时刻收到NTP服务器数据包。特别声明，t0和t3是客户端时间系统的时间、t1和t2是NTP服务端时间系统的时间，它们是有区别的。对于时间要求不那么精准设备，直接使用NTP服务器返回t2时间也没有太大影响。但是作为一个标准的通信协议，它是精益求精且容不得过多误差的，于是必须计算上网络的传输延时。客户端与服务端的时间系统的偏移定义为θ、网络的往返延迟定义为δ，基于此，可以对t2进行精确的修正，已达到相关精度要求，它们的计算公式如下：
 
-
+```
 $t_1-(t_0+δ) = θ$
 
 $t_0+δ$:在$t_1$时刻，服务器走到$t_0+δ$
@@ -279,5 +282,5 @@ $θ=\frac{(t_1-t_0)+(t_2-t_3)}{2}$
 
 $δ =(t_3-t_0)-(t_2-t_1)$
 
-
+```
 

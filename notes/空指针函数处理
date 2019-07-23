@@ -1,0 +1,50 @@
+```c
+#include <pthread.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+
+void thread(void *arg);
+void thread(void *arg) 
+{
+int i;
+for(i = 0; i < 3; ++i)
+{
+printf("This is a pthead.\n");
+}
+}
+
+int main(int argc, char* argv[])
+{
+pthread_t id;
+int i, ret;
+ret = pthread_create(&id, NULL, (void*)&thread, NULL);
+if(ret)
+{
+printf("create thread error: ");
+exit(1);
+}
+
+for(i = 0; i < 3; ++i)
+{
+printf("This is main proccess");
+}
+pthread_join(id, NULL);
+
+return 0;
+}
+```
+
+但是，他爹，我用g++ main.cpp -o -lpthread debug进行编译的时候，这个家伙：error: invalid conversion from 'void*' to 'void* (*)(void*)'不厌其烦地出现在了我的xshell中，弄得我是苦不堪言。
+
+于是，我查看了Posix中建立线程函数的定义：extern int pthread_create (pthread_t *__restrict __threadp,  __const pthread_attr_t *__restrict __attr, void(*__start_routine) (void *), void *__restrict __arg) __THROW;
+
+这个pthread_create()中的第三个参数是载入一个函数，这个函数有一个参数可以传入，返回一个 通用指针。
+因此，出现上述错误的解决方法：
+
+1）线程函数定义为**void** thread(void* arg)，而调用处写为:int ret = pthread_create(&id, NULL, (viod*)&thread, NULL)；
+
+2）线程函数定义为**void \*** thread(void* arg)，调用处为：int ret = pthead_create(&id, NULL, thread, NULL)。然后进行编译: gcc main.c -o -lpthread debug，搞定！
+
+[作者：Alpelious 来源：CSDN](https://blog.csdn.net/Alpelious/article/details/53486547)
+版权声明：本文为博主原创文章，转载请附上博文链接！

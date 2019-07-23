@@ -7,6 +7,9 @@ int main()
         /* code */
         printf("time is %d\n", i);
     }
+
+     printf("long int %d\n\n", sizeof(long int));
+        printf("long  %d\n\n", sizeof(long));
     return 0;
 }
 
