@@ -1,0 +1,67 @@
+windows与linux的换行有差异:
+
+- CRLF：Carriage Return & Linefeed，\r\n，表示回车并换行    **--->Windows-style**
+
+- LF：Linefeed，对应ASCII中转义字符\n，表示换行  **--->Unix Style**
+
+- CR：Carriage Return，对应ASCII中转义字符\r，表示回车  **--->Mac Style**
+
+---
+---
+## [关于CRLF的一些坑:](https://blog.csdn.net/YellowsuN_A/article/details/79835715)
+
+>       Git可以在你提交时自动地把行结束符CRLF转换成LF，而在签出代码时把LF转换成CRLF。用core.autocrlf来打开此项功能，如果是在Windows系统上，把它设置成true，这样当签出代码时，LF会被转换成CRLF：
+```git
+$ git config --global core.autocrlf true
+```
+---
+>       Linux或Mac系统使用LF作为行结束符，因此你不想 Git在签出文件时进行自动的转换；当一个以CRLF为行结束符的文件不小心被引入时你肯定想进行修正，把core.autocrlf设置成input来告诉Git 在提交时把CRLF转换成LF，签出时不转换：
+```git
+$ git config --global core.autocrlf input
+```
+---
+>       这样会在Windows系统上的签出文件中保留CRLF，会在Mac和Linux系统上，包括仓库中保留LF。如果你是Windows程序员，且正在开发仅运行在Windows上的项目，可以设置false取消此功能，把回车符记录在库中：
+```git
+$ git config --global core.autocrlf false
+```
+--------------------- 
+---
+## [批量转换 LF 和 CRLF 的小技巧【详细步骤】](https://blog.csdn.net/panda1234lee/article/details/89289097)
+
+### 1、强大的 Dos2Unix 工具
+下载地址为 https://waterlan.home.xs4all.nl/dos2unix.html#UNIX2DOS （可能被墙 =_=b）
+
+### 2、通过命令行工具进行转换（以 LF -> CRLF 为例）
+
+```bash
+for /R %G in (*.c *.cc *.h *.mk) do unix2dos "%G" # *.c *.cc *.h *.mk 表示任意匹配这些后缀名的文件
+```
+![命令行批量转换](https://img-blog.csdnimg.cn/20190413215108311.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9wYW5kYTEyMzRsZWUuYmxvZy5jc2RuLm5ldA==,size_16,color_FFFFFF,t_70)
+
+### 3、CRLF -> LF
+
+CRLF -> LF 也是类似，只要把命令行改为如下即可 
+```bash
+for /R %G in (*.c *.cc *.h *.mk) do dos2unix "%G" # *.c *.cc *.h *.mk 表示任意匹配这些后缀名的文件
+```
+### 4、其他强大的命令
+
+其他功能可以参考以下链接：
+
+https://waterlan.home.xs4all.nl/dos2unix/zh_CN/man1/dos2unix.htm#9 （也可能被墙 =_=b）
+
+### 5、通过 EditPlus 批量转换
+
+
+---
+## [CRLF、CR、LF详解](https://blog.csdn.net/lishuoboy/article/details/84768748)
+## 野史
+
+
+>老式机械打字机（来源：视觉中国）
+
+据野史记载，在很久以前的机械打字机时代，CR和LF分别具有不同的作用：LF会将打印纸张上移一行位置，但是保持当前打字的水平位置不变；CR则会将“Carriage”（打字机上的滚动托架）滚回到打印纸张的最左侧，但是保持当前打字的垂直位置不变，即还是在同一行。
+
+当CR和LF组合使用时，则会将打印纸张上移一行，且下一个打字位置将回到该行的最左侧，也就是我们今天所理解的换行操作。
+
+随着时间的推移，机械打字机渐渐地退出了历史舞台，当初的纸张变成了今天的显示器，打字机的按键也演变为了如今的键盘。在操作系统出现的年代，受限于内存和软盘空间的不足，一些操作系统的设计者决定采用单个字符来表示换行符，如Unix的LF、MacIntosh的CR。他们的意图都是为了进行换行操作，只是当初并没有一个国际标准（或者其他原因，鬼知道），所以才有这样字符上的不同。
