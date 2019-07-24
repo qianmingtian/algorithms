@@ -284,3 +284,76 @@ $δ =(t_3-t_0)-(t_2-t_1)$
 
 ```
 
+
+## settimeofday使用出现的问题 ：
+    1.settimeofday成功返回0，错误返回-1
+
+    2.settimeofday errno错误码:
+            EFAULT表示传递的参数错误，如时间值是无效的值，Invalid argument 
+
+            EPERM表示权限不够，注意只有root用户才有修改系统时间的权限。
+                
+                如果要让普通程序修改系统时间，可以先切换到root用户操作，修改完成后，再切换到普通用户
+
+                或者用命令chmod +s给执行文件加上root用户的权限。
+            
+            关于参数不合法：
+                1.时间设置有下限
+                
+```c
+    #include <errno.h>
+
+    gettimeofday(&current_time, NULL);
+    printf("current_time sec %ld  %ld\n", current_time.tv_sec, current_time.tv_usec);
+    current_time.tv_sec = 0;
+    current_time.tv_usec = 0;
+    flag = settimeofday(&current_time, NULL);
+    printf("%s\n", strerror(errno)); // 间接使用strerror输出错误字符串
+    if (flag)
+    {
+        printf("\nflag  %d\n\n", flag);
+    };
+
+    gettimeofday(&current_time, NULL);
+    printf("init_time    sec %ld  %ld\n", current_time.tv_sec, current_time.tv_usec);
+
+```
+```c
+current_time sec 1563934934  729678
+Invalid argument
+flag  -1
+init_time    sec 1563934934  730153  
+```
+```c
+    #include <errno.h>
+
+    gettimeofday(&current_time, NULL);
+    printf("current_time sec %ld  %ld\n", current_time.tv_sec, current_time.tv_usec);
+    current_time.tv_sec -= 3000;
+    current_time.tv_usec = 0;
+    flag = settimeofday(&current_time, NULL);
+    printf("%s\n", strerror(errno)); // 间接使用strerror输出错误字符串
+    if (flag)
+    {
+        printf("\nflag  %d\n\n", flag);
+    };
+
+    gettimeofday(&current_time, NULL);
+    printf("init_time    sec %ld  %ld\n", current_time.tv_sec, current_time.tv_usec);
+```
+
+```c
+current_time sec 1563934695  770393
+Success
+init_time    sec 1563931695  83  
+```
+
+```c
+    current_time.tv_sec = current_time.tv_sec - 1563000000; //
+    current_time.tv_usec = 3;
+ 
+
+    current_time sec 1563940140  260865
+    Success
+    init_time    sec 940140  76   
+```
