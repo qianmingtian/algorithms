@@ -211,7 +211,7 @@ timespec: 45530300 seconds
 
 ![系统函数的转化关系如下：](https://images2015.cnblogs.com/blog/937999/201604/937999-20160416155645738-366410882.jpg)
 
-https://github.com/qianmingtian/algorithms/blob/master/notes/image/937999-20160416155645738-366410882.jpg
+![系统函数的转化关系如下：](https://github.com/qianmingtian/algorithms/blob/master/notes/image/937999-20160416155645738-366410882.jpg)
 
 mktime()函数可以将struct tm转换成time_t，其声明如下：
 
