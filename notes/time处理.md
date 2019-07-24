@@ -211,7 +211,7 @@ timespec: 45530300 seconds
 
 ![系统函数的转化关系如下：](https://images2015.cnblogs.com/blog/937999/201604/937999-20160416155645738-366410882.jpg)
 
-![](https://github.com/qianmingtian/algorithms/blob/master/notes/image/937999-20160416155645738-366410882.jpg)
+
 
 mktime()函数可以将struct tm转换成time_t，其声明如下：
 
@@ -301,7 +301,7 @@ $δ =(t_3-t_0)-(t_2-t_1)$
                 或者用命令chmod +s给执行文件加上root用户的权限。
             
             关于参数不合法：
-                1.时间设置有下限
+                1.时间设置有下限,为使得进行矫正的后20位置0，直接赋值tv_sec = 0x1000000
                 
 ```c
     #include <errno.h>
