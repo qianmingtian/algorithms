@@ -1,36 +1,67 @@
-{
-    "tasks": [
-        {
-            "type": "shell",
-            "label": "gcc",
-            "command": "g++",
-            "args": [
-                "-g",
-                "${file}",
-                "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe"
-            ],
-            "options": {
-                "cwd": "D:\\mingw64\\bin"
-            }
-        }
-    ],
-    "version": "2.0.0"
-}
 // {
-//     "version": "2.0.0",
-//     "command": "gcc",
-//     "args": ["${file}","-o","${fileBasenameNoExtension}.exe"],    // 编译命令参数
-//     "problemMatcher": {
-//         "owner": "cpp",
-//         "fileLocation": ["relative", "${workspaceRoot}"],
-//         "pattern": {
-//             "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
-//             "file": 1,
-//             "line": 2,
-//             "column": 3,
-//             "severity": 4,
-//             "message": 5
+//     "tasks": [
+//         {
+//             "type": "shell",
+//             "label": "gcc",
+//             "command": "g++",
+//             "args": [
+//                 "-g",
+//                 // "${file}",
+//                 "${fileDirname}\\${fileBasenameNoExtension}.c",
+//                 "-o",
+//                 "${fileDirname}\\${fileBasenameNoExtension}.exe"
+//             ],
+//             "options": {
+//                 "cwd": "D:\\mingw64\\bin"
+//             }
 //         }
-//     }
+//     ],
+//     "version": "2.0.0"
 // }
+// // {
+// //     "version": "2.0.0",
+// //     "command": "gcc",
+// //     "args": ["${file}","-o","${fileBasenameNoExtension}.exe"],    // 编译命令参数
+// //     "problemMatcher": {
+// //         "owner": "cpp",
+// //         "fileLocation": ["relative", "${workspaceRoot}"],
+// //         "pattern": {
+// //             "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+// //             "file": 1,
+// //             "line": 2,
+// //             "column": 3,
+// //             "severity": 4,
+// //             "message": 5
+// //         }
+// //     }
+// // }
+
+{
+    "version": "2.0.0",
+    "command": "gcc",
+    "args": [
+        "-g",
+        "${file}",
+        "-o",
+        "${fileDirname}/${fileBasenameNoExtension}.exe"
+    ],
+    "problemMatcher": {
+        "owner": "cpp",
+        "fileLocation": [
+            "relative",
+            "${workspaceRoot}"
+        ],
+        "pattern": {
+            "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+            "file": 1,
+            "line": 2,
+            "column": 3,
+            "severity": 4,
+            "message": 5
+        }
+    },
+    "group": {
+        "kind": "build",
+        "isDefault": true
+    }
+}

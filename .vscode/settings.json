@@ -4,6 +4,8 @@
         "timeb.h": "c",
         "stdlib.h": "c",
         "sendfile.h": "c",
-        "unistd.h": "c"
+        "unistd.h": "c",
+        "string.h": "c",
+        "signal.h": "c"
     }
 }

@@ -1,0 +1,165 @@
+
+限制服务器平台信息泄漏 | 服务配置
+描述
+
+限制服务器平台信息泄漏会使攻击者更难确定哪些漏洞会影响服务器平台。
+1、进入Tomcat安装主目录的lib目录下，比如 cd /usr/local/tomcat7/lib 
+2、执行：jar xf catalina.jar org/apache/catalina/util/ServerInfo.properties，修改文件ServerInfo.properties中的server.info和server.number的值，如分别改为：Apache/11.0.92、11.0.92.0 
+3、执行：jar uf catalina.jar org/apache/catalina/util/ServerInfo.properties 
+4、重启Tomcat服务
+
+
+
+Tomcat进程运行权限检测 | 访问控制
+描述
+
+在运行Internet服务时，最好尽可能避免使用root用户运行，降低攻击者拿到服务器控制权限的机会。
+
+检查提示
+
+--
+
+加固建议
+
+创建低权限的账号运行Tomcat
+
+操作时建议做好记录或备份
+
+高删除项目无关文件和目录 | 访问控制
+描述
+
+Tomcat安装提供了示例应用程序、文档和其他可能不用于生产程序及目录，存在极大安全风险，建议移除
+
+检查提示
+
+--
+
+加固建议
+
+请删除Tomcat示例程序和目录、管理控制台等，即从Tomcat根目录的webapps目录，移出或删除docs、examples、host-manager、manager目录。
+
+操作时建议做好记录或备份
+
+
+高禁止自动部署 | 服务配置
+描述
+
+配置自动部署，容易被部署恶意或未经测试的应用程序，应将其禁用
+
+检查提示
+
+--
+
+加固建议
+
+修改Tomcat 跟目录下的配置文件conf/server.xml，将host节点的autoDeploy属性设置为“false”，如果host的deployOnStartup属性(如没有deployOnStartup配置可以忽略)为“true”，则也将其更改为“false”
+
+操作时建议做好记录或备份
+
+高开启日志记录 | 安全审计
+描述
+
+Tomcat需要保存输出日志，以便于排除错误和发生安全事件时，进行分析和定位
+
+检查提示
+
+--
+
+加固建议
+
+1、修改Tomcat根目录下的conf/server.xml文件。
+2、取消Host节点下Valve节点的注释(如没有则添加)。
+<Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs" prefix="localhost_access_log" suffix=".txt" pattern="%h %l %u %t &quot;%r&quot; %s %b" /> 3、重新启动Tomcat
+
+操作时建议做好记录或备份
+
+
+
+高避免为tomcat配置manager-gui弱口令 | 访问控制
+描述
+
+tomcat-manger是Tomcat提供的web应用热部署功能，该功能具有较高权限，会直接控制Tomcat应用，应尽量避免使用此功能。如有特殊需求，请务必确保为该功能配置了强口令
+
+检查提示
+
+--
+
+加固建议
+
+编辑Tomcat根目录下的配置文件conf/tomcat-user.xml，修改user节点的password属性值为复杂密码, 密码应符合复杂性要求：
+
+1、长度8位以上
+2、包含以下四类字符中的三类字符:
+英文大写字母(A 到 Z)
+英文小写字母(a 到 z)
+10 个基本数字(0 到 9)
+非字母字符(例如 !、$、#、%、@、^、&)
+3、避免使用已公开的弱密码，如：abcd.1234 、admin@123等
+操作时建议做好记录或备份
+
+高Tomcat目录权限检测 | 访问控制
+描述
+
+在运行Tomcat服务时，避免使用root用户运行，tomcat目录(catalina.home、 catalina.base目录)所有者应改为非root的运行用户
+
+检查提示
+
+--
+
+加固建议
+
+使用chown -R <Tomcat启动用户所属组>:<Tomcat启动用户> <Tomcat目录>修改tomcat目录文件所有者，如chown -R tomcat:tomcat /usr/local/tomcat
+
+操作时建议做好记录或备份
+
+
+中限制服务器平台信息泄漏 | 服务配置
+描述
+
+限制服务器平台信息泄漏会使攻击者更难确定哪些漏洞会影响服务器平台。
+
+检查提示
+
+--
+
+加固建议
+
+1、进入Tomcat安装主目录的lib目录下，比如 cd /usr/local/tomcat7/lib 2、执行：jar xf catalina.jar org/apache/catalina/util/ServerInfo.properties，修改文件ServerInfo.properties中的server.info和server.number的值，如分别改为：Apache/11.0.92、11.0.92.0 3、执行：jar uf catalina.jar org/apache/catalina/util/ServerInfo.properties 4、重启Tomcat服务
+
+操作时建议做好记录或备份
+
+
+
+    中 禁止显示异常调试信息 | 服务配置
+描述
+
+当请求处理期间发生运行时错误时，ApacheTomcat将向请求者显示调试信息。建议不要向请求者提供此类调试信息。
+
+检查提示
+
+--
+
+加固建议
+
+在Tomcat根目录下的conf/web.xml文件里面的web-app添加子节点：<error-page><exception-type>java.lang.Throwable</exception-type><location>/error.jsp</location></error-page>，在webapps目录下创建error.jsp，定义自定义错误信息
+
+操作时建议做好记录或备份
+
+
+高禁止Tomcat显示目录文件列表 | 服务配置
+描述
+
+Tomcat允许显示目录文件列表会引发目录遍历漏洞
+
+检查提示
+
+--
+
+加固建议
+
+修改Tomcat 跟目录下的配置文件conf/web.xml，将listings的值设置为false。 <param-name>listings</param-name> <param-value>false</param-value>
+
+操作时建议做好记录或备份
+
+
+

@@ -15,7 +15,7 @@ void init_os_time()
 {
     struct timeval init_time;
     //设置的时间有下限
-    gettimeofday(&init_time,NULL);
+    gettimeofday(&init_time, NULL);
 
     init_time.tv_sec = 0x1000000;
     init_time.tv_usec = 0;
@@ -44,7 +44,7 @@ int main()
 
     gettimeofday(&current_time, NULL);
     printf("current_time sec %ld  %ld\n", current_time.tv_sec, current_time.tv_usec);
-    
+
     current_time.tv_sec = current_time.tv_sec - ((current_time.tv_sec >> 20) << 20);
 
     current_time.tv_usec = 3;
@@ -73,8 +73,8 @@ int main()
     printf("current_time sec %ld  %ld\n", current_time.tv_sec, current_time.tv_usec);
 
     t4 = 15434896067;
-   printf("%lx\n", t4);
-   struct timeval time_decode;
+    printf("%lx\n", t4);
+    struct timeval time_decode;
 
     time_decode.tv_sec = t4 >> 20;
     printf("%lx\n", time_decode.tv_sec);
@@ -83,14 +83,22 @@ int main()
     printf("%lx\n", time_decode.tv_usec);
     time_decode.tv_usec = t4 - ((t4 >> 20) << 20);
     printf("%lx\n", time_decode.tv_usec);
-printf("--------------");
+    printf("--------------");
+
     init_os_time();
-     gettimeofday(&current_time, NULL);
+    gettimeofday(&current_time, NULL);
     printf("current_time sec %lx  %ld\n", current_time.tv_sec, current_time.tv_usec);
 
+    gettimeofday(&current_time, NULL);
+    printf("current_time sec %lx  %ld\n", current_time.tv_sec, current_time.tv_usec);
 
-  
+    gettimeofday(&current_time, NULL);
+    printf("current_time sec %lx  %ld\n", current_time.tv_sec, current_time.tv_usec);
 
-
+    i = 10000000L;
+    while (i--)
+        ;
+    gettimeofday(&current_time, NULL);
+    printf("current_time sec %ld  %ld\n", current_time.tv_sec, current_time.tv_usec);
 
 }
